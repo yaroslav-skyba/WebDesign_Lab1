@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>Add user</title>
+    </head>
+
+    <body>
+        <form>
+            Login <label for="login"></label><input id="login" class="formInput"/>
+            <span class="asterisk"></span>
+            <br/>
+
+            Password <label for="password"></label><input type="password" id="password" class="formInput"/>
+            <span class="asterisk"></span>
+            <br/>
+
+            Password again <label for="passwordAgain"></label><input type="password" id="passwordAgain" class="formInput"/>
+            <span class="asterisk"></span>
+            <br/>
+
+            Email <label for="email"></label><input type="email" id="email" class="formInput"/>
+            <span class="asterisk"></span>
+            <br/>
+
+            First name <label for="firstName"></label><input id="firstName" class="formInput"/>
+            <span class="asterisk"></span>
+            <br/>
+
+            Last name <label for="lastName"></label><input id="lastName" class="formInput"/>
+            <span class="asterisk"></span>
+            <br/>
+
+            Birthday <label for="birthday"></label><input type="date" id="birthday" class="formInput"/>
+            <span class="asterisk"></span>
+            <br/>
+
+            Role <label for="role"></label>
+            <select id="role" class="formInput">
+                <option value="user">user</option>
+                <option value="admin">admin</option>
+            </select>
+            <span class="asterisk"></span>
+            <br/>
+
+            <input type="submit" value="Ok" id="submit"/>
+            <input type="button" value="Cancel" id="cancel"/>
+        </form>
+
+        <script>
+            const xmlHttpRequest = new XMLHttpRequest();
+            const host = "http://localhost";
+            const port = 8080;
+            const endpointRoot = "/api/v1/";
+            const login = new URLSearchParams(location.search).get("login");
+
+            saveInputFieldValues();
+
+            function saveInputFieldValues() {
+                for (const element of document.getElementsByClassName("formInput")) {
+                    element.onchange = function () {
+                        localStorage.setItem(element.id, element.value);
+                    }
+                }
+            }
+
+            xmlHttpRequest.onreadystatechange = function () {
+                if (xmlHttpRequest.readyState === 4) {
+                    if (xmlHttpRequest.status === 200) {
+                        if (xmlHttpRequest.responseURL === host + ":" + port + endpointRoot + "roles/" + document.getElementById("role").value) {
+                            if (document.getElementById("passwordAgain").value !== document.getElementById("password").value) {
+                                alert("Passwords do not match");
+                                return;
+                            }
+
+                            const body = {};
+                            body.id = null;
+                            body.role = JSON.parse(xmlHttpRequest.responseText);
+                            body.login = document.getElementById("login").value;
+                            body.password = document.getElementById("password").value;
+                            body.email = document.getElementById("email").value;
+                            body.firstName = document.getElementById("firstName").value;
+                            body.lastName = document.getElementById("lastName").value;
+                            body.birthday = document.getElementById("birthday").value;
+
+                            xmlHttpRequest.open("POST", host + ":" + port + endpointRoot + "users");
+                            xmlHttpRequest.setRequestHeader("Content-Type", "application/json");
+                            xmlHttpRequest.send(JSON.stringify(body));
+                        }
+                    } else if (xmlHttpRequest.status === 201) {
+                        for (const element of document.getElementsByClassName("formInput")) {
+                            localStorage.removeItem(element.id);
+                        }
+
+                        alert("User has been successfully created");
+                        location.href = host + ":" + port + "/static/admin/admin.html?login=" + login;
+                    } else if (xmlHttpRequest.status === 409) {
+                        alert("Some errors occurred while creating a user");
+                    }
+                }
+            }
+
+            onload = function () {
+                for (const element of document.getElementsByClassName("formInput")) {
+                    const elementValue = localStorage.getItem(element.id);
+
+                    if (elementValue != null) {
+                        element.value = elementValue;
+                    }
+
+                    element.required = true;
+                }
+
+                for (const element of document.getElementsByClassName("asterisk")) {
+                    element.innerHTML = "*";
+                    element.style.color = "red";
+                }
+            }
+
+            for (const element of document.getElementsByClassName("formInput")) {
+                element.onchange = function () {
+                    localStorage.setItem(element.id, element.value);
+                }
+            }
+
+            document.getElementById("cancel").onclick = function () {
+                for (const element of document.getElementsByClassName("formInput")) {
+                    localStorage.removeItem(element.id);
+                }
+
+                location.href = host + ":" + port + "/static/admin/admin.html?login=" + login;
+            }
+        </script>
+    </body>
+</html>

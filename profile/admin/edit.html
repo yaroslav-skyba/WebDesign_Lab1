@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>Edit user</title>
+    </head>
+
+    <body>
+        Login <label for="login"></label><input id="login" class="formInput" readonly/>
+        <span class="asterisk"></span>
+        <br/>
+
+        Password <label for="password"></label><input type="password" id="password"/>
+        <span class="asterisk"></span>
+        <br/>
+
+        Password again <label for="passwordAgain"></label><input type="password" id="passwordAgain"/>
+        <span class="asterisk"></span>
+        <br/>
+
+        Email <label for="email"></label><input type="email" id="email" class="formInput"/>
+        <span class="asterisk"></span>
+        <br/>
+
+        First name <label for="firstName"></label><input id="firstName" class="formInput"/>
+        <span class="asterisk"></span>
+        <br/>
+
+        Last name <label for="lastName"></label><input id="lastName" class="formInput"/>
+        <span class="asterisk"></span>
+        <br/>
+
+        Birthday <label for="birthday"></label><input type="date" id="birthday" class="formInput"/>
+        <span class="asterisk"></span>
+        <br/>
+
+        Role <label for="role"></label>
+        <select id="role" class="formInput">
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+        </select>
+        <span class="asterisk"></span>
+        <br/>
+
+        <input type="button" value="Ok" id="submit"/>
+        <input type="button" value="Cancel" id="cancel"/>
+
+        <script>
+            const xmlHttpRequest = new XMLHttpRequest();
+            const host = "http://localhost";
+            const port = 8080;
+            const endpointRoot = "/api/v1/";
+            const urlSearchParams = new URLSearchParams(location.search);
+            const login = urlSearchParams.get("login");
+            const userGETUrl = host + ":" + port + endpointRoot + "users/" + login;
+
+            let user = null;
+
+            saveInputFieldValues();
+
+            function saveInputFieldValues() {
+                for (const element of document.getElementsByClassName("formInput")) {
+                    element.onchange = function () {
+                        localStorage.setItem(element.id, element.value);
+                    }
+                }
+            }
+
+            xmlHttpRequest.onreadystatechange = function () {
+                if (xmlHttpRequest.readyState === 4) {
+                    if (xmlHttpRequest.status === 200) {
+                        if (xmlHttpRequest.responseURL === userGETUrl) {
+                            user = JSON.parse(xmlHttpRequest.responseText);
+
+                            setElement(document.getElementById("login"));
+                            setElement(document.getElementById("email"));
+                            setElement(document.getElementById("firstName"));
+                            setElement(document.getElementById("lastName"));
+                            setElement(document.getElementById("birthday"));
+
+                            const role = document.getElementById("role");
+                            const elementValue = localStorage.getItem(role.id);
+
+                            if (elementValue != null) {
+                                role.value = elementValue;
+                            } else {
+                                role.value = user[role.id].name;
+                            }
+
+                            role.required = true;
+
+                            function setElement(element) {
+                                const elementValue = localStorage.getItem(element.id);
+
+                                if (elementValue != null) {
+                                    element.value = elementValue;
+                                } else {
+                                    element.value = user[element.id];
+                                }
+
+                                element.required = true;
+                            }
+                        } else if (xmlHttpRequest.responseURL === host + ":" + port + endpointRoot + "users/" + user.id) {
+                            for (const element of document.getElementsByClassName("formInput")) {
+                                localStorage.removeItem(element.id);
+                            }
+
+                            alert("User has been successfully edited");
+                            location.href = host + ":" + port + "/static/admin/admin.html?login=" + urlSearchParams.get("admin");
+                        } else if (xmlHttpRequest.responseURL === host + ":" + port + endpointRoot + "roles/" + document.getElementById("role").value) {
+                            if (document.getElementById("passwordAgain").value !== document.getElementById("password").value) {
+                                alert("Passwords do not match");
+                                return;
+                            }
+
+                            const body = {};
+                            body.id = user.id;
+                            body.role = JSON.parse(xmlHttpRequest.responseText);
+                            body.login = user.login;
+
+                            const passwordValue = document.getElementById("password").value;
+
+                            if (passwordValue === "") {
+                                body.password = user.password;
+                            } else {
+                                body.password = passwordValue;
+                            }
+
+                            body.email = document.getElementById("email").value;
+                            body.firstName = document.getElementById("firstName").value;
+                            body.lastName = document.getElementById("lastName").value;
+                            body.birthday = document.getElementById("birthday").value;
+
+                            xmlHttpRequest.open("PUT", host + ":" + port + endpointRoot + "users/" + user.id);
+                            xmlHttpRequest.setRequestHeader("Content-Type", "application/json");
+                            xmlHttpRequest.send(JSON.stringify(body));
+                        }
+                    } else if (xmlHttpRequest.status === 409) {
+                        alert("Some errors occurred while editing a user");
+                    }
+                }
+            }
+
+            onload = function () {
+                if (login === null) {
+                    location.href = "/404";
+                }
+
+                xmlHttpRequest.open("GET", userGETUrl);
+                xmlHttpRequest.send();
+
+                for (const element of document.getElementsByClassName("asterisk")) {
+                    element.innerHTML = "*";
+                    element.style.color = "red";
+                }
+            }
+
+            document.getElementById("submit").onclick = function () {
+                xmlHttpRequest.open("GET", host + ":" + port + endpointRoot + "roles/" + document.getElementById("role").value);
+                xmlHttpRequest.send();
+            }
+
+            document.getElementById("cancel").onclick = function () {
+                for (const element of document.getElementsByClassName("formInput")) {
+                    localStorage.removeItem(element.id);
+                }
+
+                location.href = host + ":" + port + "/static/admin/admin.html?login=" + urlSearchParams.get("admin");
+            }
+        </script>
+    </body>
+</html>
