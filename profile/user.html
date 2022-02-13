@@ -12,30 +12,5 @@
         <form method="post" action="/logout">
             Click <input type="submit" value="here"> to logout
         </form>
-
-        <script>
-            const xmlHttpRequest = new XMLHttpRequest();
-            const host = "http://localhost";
-            const port = 8080;
-            const endpointRoot = "/api/v1/";
-            const login = new URLSearchParams(location.search).get("login");
-            const userUrl = host + ":" + port + endpointRoot + "users/" + login;
-
-            onload = function () {
-                if (login === null) {
-                    location.href = "/404";
-                }
-
-                xmlHttpRequest.open("GET", userUrl);
-                xmlHttpRequest.send();
-            }
-
-            xmlHttpRequest.onreadystatechange = function () {
-                if (xmlHttpRequest.readyState === 4
-                    && xmlHttpRequest.responseURL === userUrl) {
-                    document.getElementById("h1").appendChild(document.createTextNode(JSON.parse(xmlHttpRequest.responseText).firstName));
-                }
-            }
-        </script>
     </body>
 </html>

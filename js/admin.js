@@ -1,2 +1,2 @@
-setHeaderFooter("../../index.html", "../../img/logo.png", "../../about.html", "../../login.html",
-    "../../registration.html", "../user.html");
+setNavigation("../../index.html", "../../img/logo.png", "../../about.html", "../../login.html",
+    "../../registration.html", "admin.html", "../user.html");

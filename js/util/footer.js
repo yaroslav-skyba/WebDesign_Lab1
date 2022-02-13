@@ -1,6 +1,6 @@
 function setFooter() {
     document.getElementById("footer").innerHTML =
-        `<footer class="bg-dark text-center text-white fixed-bottom">
+        `<footer class="bg-dark text-center text-white">
             <div class="container p-4 pb-0">
                 <section class="mb-4">
                     <a class="btn btn-outline-light btn-floating m-1" href="https://www.linkedin.com/in/yaroslavskyba" role="button">
@@ -17,7 +17,7 @@ function setFooter() {
                 </section>
             </div>
         
-            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            <div class="text-center p-3" style="background-color: #00000033">
                 © 2022 Copyright:
                 <a class="text-white" href="https://thispersondoesnotexist.com/">Rozetka</a>
             </div>
