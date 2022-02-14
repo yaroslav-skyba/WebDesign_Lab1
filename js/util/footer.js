@@ -16,7 +16,7 @@ function setFooter() {
                     </a>
                 </section>
             </div>
-        
+            
             <div class="text-center p-3" style="background-color: #00000033">
                 © 2022 Copyright:
                 <a class="text-white" href="https://thispersondoesnotexist.com/">Rozetka</a>
