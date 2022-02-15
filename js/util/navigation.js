@@ -36,7 +36,7 @@ function setNavigation(brandHref, brandImgSrc, cartHref, aboutHref, loginHref, r
         const navItem1 = document.getElementById("navItem1");
         const navItem2 = document.getElementById("navItem2");
 
-        if (!localStorage.getItem(jwtKey)) {
+        if (localStorage.getItem(jwtKey) == null) {
             navItem1.innerHTML = "Login";
             navItem1.href = loginHref;
 
