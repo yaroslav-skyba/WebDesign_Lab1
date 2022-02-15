@@ -1,4 +1,4 @@
-function setHeader(brandHref, brandImgSrc, aboutHref) {
+function setHeader(brandHref, brandImgSrc, cartHref, aboutHref) {
     document.getElementById("header").innerHTML =
         `<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
@@ -14,15 +14,19 @@ function setHeader(brandHref, brandImgSrc, aboutHref) {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" href="` + aboutHref +`">About</a>
-                        </li>
-    
-                        <li class="nav-item">
                             <a id="navItem1" class="nav-link active"></a>
                         </li>
     
                         <li class="nav-item">
                             <a id="navItem2" class="nav-link active"></a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link active" href="` + cartHref +`">Cart</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link active" href="` + aboutHref +`">About</a>
                         </li>
                     </ul>
     

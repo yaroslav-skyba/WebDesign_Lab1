@@ -1,2 +1,2 @@
-setNavigation("../../index.html", "../../img/logo.png", "../../about.html", "../../login.html",
+setNavigation("../../index.html", "../../img/logo.png", "../../cart.html", "../../about.html", "../../login.html",
     "../../registration.html", "admin.html", "../user.html");

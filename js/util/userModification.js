@@ -1,8 +1,8 @@
-function setRegistrationForm() {
+function setUserModification() {
     document.getElementById("main").innerHTML =
         `<section>
             <div class="container">
-                <div class="row justify-content-center align-items-center">
+                <div class="row min-vh-100 justify-content-center align-items-center">
                     <div class="col-12 col-md-9 col-lg-7 col-xl-6">
                         <div class="card bg-dark btn-dark" style="border-radius: 15px">
                             <div class="card-body p-5">
